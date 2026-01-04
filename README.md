@@ -69,5 +69,5 @@ Since Vantage is a client-side application, no backend installation is required.
     git clone https://github.com/arnav-patange19/vantage.git
     ```
 2.  **Open the application:**
-    Simply open the `vantage.html` file in any modern web browser.
+    Simply open the `index.html` file in any modern web browser.
 
