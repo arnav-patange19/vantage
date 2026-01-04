@@ -1,1312 +1,783 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <title>Vantage</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vantage">
+    <meta name="theme-color" content="#050505">
+
+    <title>Vantage | Obsidian</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-      :root {
-        --bg-body: #050505;
-        --surface-card: #121212;
-        --surface-elevated: #1e1e1e;
-        --border-subtle: rgba(255, 255, 255, 0.08);
-        --text-primary: #ffffff;
-        --text-secondary: #a1a1aa;
-        --text-tertiary: #52525b;
-        --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        --color-needs: #3b82f6;
-        --color-wants: #f59e0b;
-        --color-futures: #10b981;
-        --color-savings: #06b6d4;
-        --color-deduct: #a855f7;
-        --radius-lg: 24px;
-        --radius-md: 16px;
-      }
+        :root {
+            --bg-body: #050505;
+            --surface-card: #121212;
+            --surface-elevated: #1E1E1E;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #52525b;
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --color-needs: #3b82f6;
+            --color-wants: #f59e0b;
+            --color-futures: #10b981;
+            --color-savings: #06b6d4;
+            --color-deduct: #a855f7;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+        }
 
-      * {
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-      }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-      body {
-        background-color: var(--bg-body);
-        color: var(--text-primary);
-        font-family: "Manrope", sans-serif;
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-        overflow-x: hidden;
-      }
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            font-family: 'Manrope', sans-serif;
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            /* Safe area for iPhone Notch/Home Bar */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
 
-      .app-layout {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 24px;
-        display: grid;
-        gap: 32px;
-      }
-
-      .brand {
-        font-size: 1.75rem;
-        font-weight: 800;
-        letter-spacing: -1px;
-        background: linear-gradient(to right, #fff, #94a3b8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-      }
-
-      @media (min-width: 1024px) {
         .app-layout {
-          grid-template-columns: 400px 1fr;
-          align-items: start;
-          padding-top: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            display: grid;
+            gap: 32px;
         }
-        .left-panel {
-          position: sticky;
-          top: 40px;
+
+        .brand {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
         }
-        .right-panel {
-          background: var(--surface-card);
-          border: 1px solid var(--border-subtle);
-          border-radius: var(--radius-lg);
-          padding: 24px;
-          min-height: 80vh;
+
+        @media (min-width: 1024px) {
+            .app-layout {
+                grid-template-columns: 400px 1fr;
+                align-items: start;
+                padding-top: 40px;
+            }
+            .left-panel { position: sticky; top: 40px; }
+            .right-panel {
+                background: var(--surface-card);
+                border: 1px solid var(--border-subtle);
+                border-radius: var(--radius-lg);
+                padding: 24px;
+                min-height: 80vh;
+            }
+            .mobile-header { display: none; }
+            .desktop-brand { display: block; margin-bottom: 24px; }
+            .desktop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         }
-        .mobile-header {
-          display: none;
+
+        @media (max-width: 1023px) {
+            .app-layout { grid-template-columns: 1fr; }
+            .left-panel { position: relative; }
+            .right-panel { padding-bottom: 80px; }
+            .desktop-header { display: none; }
+            .desktop-brand { display: none; }
+            .mobile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         }
-        .desktop-brand {
-          display: block;
-          margin-bottom: 24px;
+
+        .selector-btn {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex; align-items: center; gap: 6px;
+            transition: 0.2s;
+            user-select: none;
         }
-        .desktop-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 24px;
+        .selector-btn:hover { border-color: #6366f1; color: white; }
+
+        .hero-container { position: relative; margin-bottom: 32px; }
+        .hero-glow {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; height: 100%;
+            background: var(--gradient-primary);
+            filter: blur(80px); opacity: 0.25; z-index: 0; border-radius: 50%;
         }
-      }
 
-      @media (max-width: 1023px) {
-        .app-layout {
-          grid-template-columns: 1fr;
+        .hero-card {
+            position: relative; z-index: 1;
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
         }
-        .left-panel {
-          position: relative;
+
+        .hero-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-tertiary); font-weight: 700; }
+        .hero-balance {
+            font-size: 3.5rem; font-weight: 700; margin: 8px 0 24px 0; letter-spacing: -2px;
+            background: linear-gradient(to bottom, #fff, #cbd5e1);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .right-panel {
-          padding-bottom: 80px;
+
+        .stats-row { display: flex; gap: 12px; }
+        .pill {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle);
+            padding: 8px 14px; border-radius: 12px; font-size: 0.85rem; font-weight: 500;
+            color: var(--text-secondary); display: flex; align-items: center; gap: 8px; cursor: pointer;
         }
-        .desktop-header {
-          display: none;
+        .pill:hover { background: rgba(255,255,255,0.08); color: white; }
+
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px; }
+        .metric-box {
+            background: var(--surface-card); border: 1px solid var(--border-subtle);
+            padding: 16px; border-radius: var(--radius-md);
         }
-        .desktop-brand {
-          display: none;
+        .metric-head { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .metric-label { font-size: 0.75rem; font-weight: 700; }
+        .metric-val { font-size: 1rem; font-weight: 700; }
+        .rail { width: 100%; height: 4px; background: #27272a; border-radius: 2px; overflow: hidden; }
+        .bar { height: 100%; border-radius: 2px; transition: width 0.5s ease; box-shadow: 0 0 10px currentColor; }
+
+        .section-title { font-size: 1rem; color: var(--text-tertiary); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; display: flex; justify-content: space-between; align-items: center;}
+        
+        .trans-list { list-style: none; padding: 0; margin: 0; }
+        .trans-item {
+            display: flex; align-items: center; padding: 16px; 
+            border-bottom: 1px solid var(--border-subtle);
+            border-radius: 12px; margin-bottom: 8px;
+            background: rgba(255,255,255,0.02);
+            transition: background 0.2s;
         }
-        .mobile-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 24px;
+        .trans-item:hover { background: rgba(255,255,255,0.05); }
+        .cat-dot {
+            width: 40px; height: 40px; border-radius: 12px; background: var(--surface-elevated);
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-right: 16px;
+            border: 1px solid var(--border-subtle);
         }
-      }
+        .trans-details { flex: 1; }
+        .trans-name { font-weight: 600; font-size: 0.95rem; color: white; }
+        .trans-date { font-size: 0.75rem; color: var(--text-tertiary); }
+        .trans-amount { font-weight: 700; font-size: 1rem; color: white; }
+        .del-btn { margin-left: 15px; color: #ef4444; cursor: pointer; padding: 5px; opacity: 0.5; }
+        .del-btn:hover { opacity: 1; }
 
-      .selector-btn {
-        background: var(--surface-elevated);
-        border: 1px solid var(--border-subtle);
-        padding: 8px 16px;
-        border-radius: 50px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--text-secondary);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        transition: 0.2s;
-        user-select: none;
-      }
-      .selector-btn:hover {
-        border-color: #6366f1;
-        color: white;
-      }
+        .fab {
+            position: fixed; bottom: 30px; right: 30px;
+            background: white; color: black; width: 64px; height: 64px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; box-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
+            border: none; cursor: pointer; z-index: 100; transition: transform 0.2s;
+        }
+        .fab:hover { transform: scale(1.05); }
 
-      .hero-container {
-        position: relative;
-        margin-bottom: 32px;
-      }
-      .hero-glow {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        height: 100%;
-        background: var(--gradient-primary);
-        filter: blur(80px);
-        opacity: 0.25;
-        z-index: 0;
-        border-radius: 50%;
-      }
+        .backdrop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+            z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .backdrop.active { opacity: 1; pointer-events: auto; }
 
-      .hero-card {
-        position: relative;
-        z-index: 1;
-        background: rgba(18, 18, 18, 0.8);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: var(--radius-lg);
-        padding: 32px;
-        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
-      }
+        .modal {
+            background: #18181b; border: 1px solid var(--border-subtle);
+            border-radius: 24px; padding: 32px; width: 90%; max-width: 450px;
+            transform: scale(0.95); transition: transform 0.2s;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .backdrop.active .modal { transform: scale(1); }
 
-      .hero-label {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: var(--text-tertiary);
-        font-weight: 700;
-      }
-      .hero-balance {
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin: 8px 0 24px 0;
-        letter-spacing: -2px;
-        background: linear-gradient(to bottom, #fff, #cbd5e1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .modal-title { font-size: 1.25rem; font-weight: 700; }
+        
+        .input-group { margin-bottom: 20px; }
+        .label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+        .input {
+            width: 100%; background: #09090b; border: 1px solid var(--border-subtle);
+            padding: 16px; border-radius: 12px; color: white; font-size: 1rem;
+            font-family: inherit; outline: none;
+        }
+        .input:focus { border-color: #6366f1; }
+        
+        .btn-main { width: 100%; background: white; color: black; font-weight: 700; padding: 16px; border-radius: 12px; border: none; cursor: pointer; }
+        .btn-danger { width: 100%; background: #ef4444; color: white; font-weight: 700; padding: 16px; border-radius: 12px; border: none; cursor: pointer; margin-top: 15px; }
+        .btn-ghost { width: 100%; background: transparent; color: #ef4444; font-weight: 600; padding: 12px; border-radius: 12px; border: 1px solid #ef4444; cursor: pointer; margin-top: 15px; }
 
-      .stats-row {
-        display: flex;
-        gap: 12px;
-      }
-      .pill {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid var(--border-subtle);
-        padding: 8px 14px;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: var(--text-secondary);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-      }
-      .pill:hover {
-        background: rgba(255, 255, 255, 0.08);
-        color: white;
-      }
+        .toggle-row { background: #27272a; padding: 4px; border-radius: 14px; display: flex; margin-bottom: 20px; }
+        .toggle-opt { flex: 1; text-align: center; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; color: var(--text-secondary); cursor: pointer; }
+        .toggle-opt.active { background: #09090b; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
 
-      .metrics-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 12px;
-        margin-bottom: 20px;
-      }
-      .metric-box {
-        background: var(--surface-card);
-        border: 1px solid var(--border-subtle);
-        padding: 16px;
-        border-radius: var(--radius-md);
-      }
-      .metric-head {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 8px;
-      }
-      .metric-label {
-        font-size: 0.75rem;
-        font-weight: 700;
-      }
-      .metric-val {
-        font-size: 1rem;
-        font-weight: 700;
-      }
-      .rail {
-        width: 100%;
-        height: 4px;
-        background: #27272a;
-        border-radius: 2px;
-        overflow: hidden;
-      }
-      .bar {
-        height: 100%;
-        border-radius: 2px;
-        transition: width 0.5s ease;
-        box-shadow: 0 0 10px currentColor;
-      }
+        .checkbox-wrapper { display: flex; align-items: center; margin-bottom: 20px; background: rgba(99, 102, 241, 0.1); padding: 12px; border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.2); }
+        .checkbox-wrapper input { width: 20px; height: 20px; margin-right: 12px; accent-color: #6366f1; }
+        .checkbox-wrapper label { margin: 0; color: #fff; cursor: pointer; font-size: 0.9rem; font-weight: 600; }
 
-      .section-title {
-        font-size: 1rem;
-        color: var(--text-tertiary);
-        margin-bottom: 20px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-weight: 700;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .trans-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .trans-item {
-        display: flex;
-        align-items: center;
-        padding: 16px;
-        border-bottom: 1px solid var(--border-subtle);
-        border-radius: 12px;
-        margin-bottom: 8px;
-        background: rgba(255, 255, 255, 0.02);
-        transition: background 0.2s;
-      }
-      .trans-item:hover {
-        background: rgba(255, 255, 255, 0.05);
-      }
-      .cat-dot {
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        background: var(--surface-elevated);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        margin-right: 16px;
-        border: 1px solid var(--border-subtle);
-      }
-      .trans-details {
-        flex: 1;
-      }
-      .trans-name {
-        font-weight: 600;
-        font-size: 0.95rem;
-        color: white;
-      }
-      .trans-date {
-        font-size: 0.75rem;
-        color: var(--text-tertiary);
-      }
-      .trans-amount {
-        font-weight: 700;
-        font-size: 1rem;
-        color: white;
-      }
-      .del-btn {
-        margin-left: 15px;
-        color: #ef4444;
-        cursor: pointer;
-        padding: 5px;
-        opacity: 0.5;
-      }
-      .del-btn:hover {
-        opacity: 1;
-      }
-
-      .fab {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: white;
-        color: black;
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        box-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
-        border: none;
-        cursor: pointer;
-        z-index: 100;
-        transition: transform 0.2s;
-      }
-      .fab:hover {
-        transform: scale(1.05);
-      }
-
-      .backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(8px);
-        z-index: 200;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .backdrop.active {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .modal {
-        background: #18181b;
-        border: 1px solid var(--border-subtle);
-        border-radius: 24px;
-        padding: 32px;
-        width: 90%;
-        max-width: 450px;
-        transform: scale(0.95);
-        transition: transform 0.2s;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-      }
-      .backdrop.active .modal {
-        transform: scale(1);
-      }
-
-      .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-      }
-      .modal-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-      }
-
-      .input-group {
-        margin-bottom: 20px;
-      }
-      .label {
-        display: block;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--text-secondary);
-        margin-bottom: 8px;
-      }
-      .input {
-        width: 100%;
-        background: #09090b;
-        border: 1px solid var(--border-subtle);
-        padding: 16px;
-        border-radius: 12px;
-        color: white;
-        font-size: 1rem;
-        font-family: inherit;
-        outline: none;
-      }
-      .input:focus {
-        border-color: #6366f1;
-      }
-
-      .btn-main {
-        width: 100%;
-        background: white;
-        color: black;
-        font-weight: 700;
-        padding: 16px;
-        border-radius: 12px;
-        border: none;
-        cursor: pointer;
-      }
-      .btn-danger {
-        width: 100%;
-        background: #ef4444;
-        color: white;
-        font-weight: 700;
-        padding: 16px;
-        border-radius: 12px;
-        border: none;
-        cursor: pointer;
-        margin-top: 15px;
-      }
-      .btn-ghost {
-        width: 100%;
-        background: transparent;
-        color: #ef4444;
-        font-weight: 600;
-        padding: 12px;
-        border-radius: 12px;
-        border: 1px solid #ef4444;
-        cursor: pointer;
-        margin-top: 15px;
-      }
-
-      .toggle-row {
-        background: #27272a;
-        padding: 4px;
-        border-radius: 14px;
-        display: flex;
-        margin-bottom: 20px;
-      }
-      .toggle-opt {
-        flex: 1;
-        text-align: center;
-        padding: 12px;
-        border-radius: 10px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        cursor: pointer;
-      }
-      .toggle-opt.active {
-        background: #09090b;
-        color: white;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      }
-
-      .checkbox-wrapper {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-        background: rgba(99, 102, 241, 0.1);
-        padding: 12px;
-        border-radius: 12px;
-        border: 1px solid rgba(99, 102, 241, 0.2);
-      }
-      .checkbox-wrapper input {
-        width: 20px;
-        height: 20px;
-        margin-right: 12px;
-        accent-color: #6366f1;
-      }
-      .checkbox-wrapper label {
-        margin: 0;
-        color: #fff;
-        cursor: pointer;
-        font-size: 0.9rem;
-        font-weight: 600;
-      }
-
-      .year-selector {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-      .year-btn {
-        background: var(--surface-elevated);
-        border: none;
-        color: white;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 1.2rem;
-      }
-      .year-display {
-        font-size: 1.5rem;
-        font-weight: 800;
-      }
-
-      .month-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-      }
-      .month-tile {
-        background: var(--surface-card);
-        border: 1px solid var(--border-subtle);
-        padding: 15px;
-        border-radius: 12px;
-        text-align: center;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-      }
-      .month-tile:hover {
-        border-color: #6366f1;
-        color: white;
-      }
-      .month-tile.selected {
-        background: #6366f1;
-        color: white;
-        border-color: #6366f1;
-      }
-
-      .dropdown {
-        position: absolute;
-        top: 110%;
-        right: 0;
-        background: #18181b;
-        border: 1px solid var(--border-subtle);
-        border-radius: 16px;
-        padding: 8px;
-        min-width: 200px;
-        display: none;
-        z-index: 50;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-      }
-      .dropdown.show {
-        display: block;
-      }
-      .drop-item {
-        padding: 12px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        display: flex;
-        justify-content: space-between;
-      }
-      .drop-item:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: white;
-      }
+        .year-selector { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .year-btn { background: var(--surface-elevated); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; }
+        .year-display { font-size: 1.5rem; font-weight: 800; }
+        
+        .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .month-tile {
+            background: var(--surface-card); border: 1px solid var(--border-subtle);
+            padding: 15px; border-radius: 12px; text-align: center; cursor: pointer;
+            font-weight: 600; font-size: 0.9rem; color: var(--text-secondary);
+        }
+        .month-tile:hover { border-color: #6366f1; color: white; }
+        .month-tile.selected { background: #6366f1; color: white; border-color: #6366f1; }
+        
+        .dropdown {
+            position: absolute; top: 110%; right: 0; background: #18181b; 
+            border: 1px solid var(--border-subtle); border-radius: 16px; 
+            padding: 8px; min-width: 200px; display: none; z-index: 50;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .dropdown.show { display: block; }
+        .drop-item { padding: 12px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: var(--text-secondary); display: flex; justify-content: space-between;}
+        .drop-item:hover { background: rgba(255,255,255,0.05); color: white; }
     </style>
-  </head>
-  <body>
-    <div class="app-layout">
-      <div class="left-panel">
-        <div class="brand desktop-brand">Vantage</div>
+</head>
+<body>
 
+<div class="app-layout">
+    
+    <div class="left-panel">
+        <div class="brand desktop-brand">Vantage</div>
+        
         <div class="mobile-header">
-          <div class="brand">Vantage</div>
-          <div style="position: relative">
-            <div class="selector-btn" onclick="toggleMobDropdown(event)">
-              <span id="mobile-month-label">Loading...</span> <span>▼</span>
+            <div class="brand">Vantage</div>
+            <div style="position: relative;">
+                <div class="selector-btn" onclick="toggleMobDropdown(event)">
+                    <span id="mobile-month-label">Loading...</span> <span>▼</span>
+                </div>
+                <div class="dropdown" id="mobile-dropdown">
+                    <div id="mob-period-list"></div>
+                    <div style="height:1px; background:var(--border-subtle); margin:6px 0;"></div>
+                    <div class="drop-item" onclick="openPickerModal()" style="color:#6366f1;">+ Add Month</div>
+                    <div class="drop-item" onclick="openSettings()">⚙️ Settings</div>
+                </div>
             </div>
-            <div class="dropdown" id="mobile-dropdown">
-              <div id="mob-period-list"></div>
-              <div
-                style="
-                  height: 1px;
-                  background: var(--border-subtle);
-                  margin: 6px 0;
-                "
-              ></div>
-              <div
-                class="drop-item"
-                onclick="openPickerModal()"
-                style="color: #6366f1"
-              >
-                + Add Month
-              </div>
-              <div class="drop-item" onclick="openSettings()">⚙️ Settings</div>
-            </div>
-          </div>
         </div>
 
         <div class="hero-container">
-          <div class="hero-glow"></div>
-          <div class="hero-card">
-            <div>
-              <div class="hero-label">Available Balance</div>
-              <div class="hero-balance">₹<span id="val-balance">0</span></div>
+            <div class="hero-glow"></div>
+            <div class="hero-card">
+                <div>
+                    <div class="hero-label">Available Balance</div>
+                    <div class="hero-balance">₹<span id="val-balance">0</span></div>
+                </div>
+                <div class="stats-row">
+                    <div class="pill" style="color:var(--color-savings)"><span>💎</span> ₹<span id="val-savings">0</span> Stashed</div>
+                    <div class="pill" onclick="editBudget()"><span>✏️</span> Limits</div>
+                </div>
             </div>
-            <div class="stats-row">
-              <div class="pill" style="color: var(--color-savings)">
-                <span>💎</span> ₹<span id="val-savings">0</span> Stashed
-              </div>
-              <div class="pill" onclick="editBudget()">
-                <span>✏️</span> Limits
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="metrics-grid">
-          <div class="metric-box">
-            <div class="metric-head">
-              <span class="metric-label" style="color: var(--color-needs)"
-                >NEEDS</span
-              >
-              <span class="metric-val">₹<span id="left-needs">0</span></span>
+            <div class="metric-box">
+                <div class="metric-head">
+                    <span class="metric-label" style="color:var(--color-needs)">NEEDS</span>
+                    <span class="metric-val">₹<span id="left-needs">0</span></span>
+                </div>
+                <div class="rail"><div id="bar-needs" class="bar" style="background:var(--color-needs); width:0%"></div></div>
             </div>
-            <div class="rail">
-              <div
-                id="bar-needs"
-                class="bar"
-                style="background: var(--color-needs); width: 0%"
-              ></div>
+            <div class="metric-box">
+                <div class="metric-head">
+                    <span class="metric-label" style="color:var(--color-wants)">WANTS</span>
+                    <span class="metric-val">₹<span id="left-wants">0</span></span>
+                </div>
+                <div class="rail"><div id="bar-wants" class="bar" style="background:var(--color-wants); width:0%"></div></div>
             </div>
-          </div>
-          <div class="metric-box">
-            <div class="metric-head">
-              <span class="metric-label" style="color: var(--color-wants)"
-                >WANTS</span
-              >
-              <span class="metric-val">₹<span id="left-wants">0</span></span>
+            <div class="metric-box">
+                <div class="metric-head">
+                    <span class="metric-label" style="color:var(--color-futures)">FUTURES</span>
+                    <span class="metric-val">₹<span id="left-futures">0</span></span>
+                </div>
+                <div class="rail"><div id="bar-futures" class="bar" style="background:var(--color-futures); width:0%"></div></div>
             </div>
-            <div class="rail">
-              <div
-                id="bar-wants"
-                class="bar"
-                style="background: var(--color-wants); width: 0%"
-              ></div>
-            </div>
-          </div>
-          <div class="metric-box">
-            <div class="metric-head">
-              <span class="metric-label" style="color: var(--color-futures)"
-                >FUTURES</span
-              >
-              <span class="metric-val">₹<span id="left-futures">0</span></span>
-            </div>
-            <div class="rail">
-              <div
-                id="bar-futures"
-                class="bar"
-                style="background: var(--color-futures); width: 0%"
-              ></div>
-            </div>
-          </div>
         </div>
-      </div>
+    </div>
 
-      <div class="right-panel">
+    <div class="right-panel">
         <div class="desktop-header">
-          <div class="section-title" style="margin: 0">Transactions</div>
-          <div style="position: relative">
-            <div class="selector-btn" onclick="toggleDeskDropdown(event)">
-              <span id="desk-month-label">Loading...</span> <span>▼</span>
+            <div class="section-title" style="margin:0;">Transactions</div>
+            <div style="position: relative;">
+                <div class="selector-btn" onclick="toggleDeskDropdown(event)">
+                    <span id="desk-month-label">Loading...</span> <span>▼</span>
+                </div>
+                <div class="dropdown" id="desk-dropdown">
+                    <div id="desk-period-list"></div>
+                    <div style="height:1px; background:var(--border-subtle); margin:6px 0;"></div>
+                    <div class="drop-item" onclick="openPickerModal()" style="color:#6366f1;">+ Add Month</div>
+                    <div class="drop-item" onclick="openSettings()">⚙️ Settings</div>
+                </div>
             </div>
-            <div class="dropdown" id="desk-dropdown">
-              <div id="desk-period-list"></div>
-              <div
-                style="
-                  height: 1px;
-                  background: var(--border-subtle);
-                  margin: 6px 0;
-                "
-              ></div>
-              <div
-                class="drop-item"
-                onclick="openPickerModal()"
-                style="color: #6366f1"
-              >
-                + Add Month
-              </div>
-              <div class="drop-item" onclick="openSettings()">⚙️ Settings</div>
-            </div>
-          </div>
         </div>
-
-        <div class="section-title mobile-header" style="margin-bottom: 15px">
-          Recent Activity
-        </div>
+        
+        <div class="section-title mobile-header" style="margin-bottom:15px;">Recent Activity</div>
 
         <ul class="trans-list" id="transaction-list"></ul>
-        <div
-          id="empty-state"
-          style="text-align: center; padding: 40px; color: var(--text-tertiary)"
-        >
-          No transactions found for this month.
+        <div id="empty-state" style="text-align:center; padding:40px; color:var(--text-tertiary);">
+            No transactions found for this month.
         </div>
-      </div>
     </div>
 
-    <button class="fab" onclick="openAddModal()">+</button>
+</div>
 
-    <div class="backdrop" id="modal-add">
-      <div class="modal">
+<button class="fab" onclick="openAddModal()">+</button>
+
+<div class="backdrop" id="modal-add">
+    <div class="modal">
         <div class="modal-header">
-          <div class="modal-title">New Entry</div>
-          <div style="cursor: pointer" onclick="closeAllModals()">×</div>
+            <div class="modal-title">New Entry</div>
+            <div style="cursor:pointer" onclick="closeAllModals()">×</div>
         </div>
         <div class="toggle-row">
-          <div
-            class="toggle-opt active"
-            id="type-expense"
-            onclick="setType('expense')"
-          >
-            Expense
-          </div>
-          <div
-            class="toggle-opt"
-            id="type-savings"
-            onclick="setType('savings')"
-          >
-            Savings
-          </div>
+            <div class="toggle-opt active" id="type-expense" onclick="setType('expense')">Expense</div>
+            <div class="toggle-opt" id="type-savings" onclick="setType('savings')">Savings</div>
         </div>
 
-        <div
-          class="checkbox-wrapper"
-          id="savings-deduct-wrapper"
-          style="display: none"
-        >
-          <input type="checkbox" id="inp-use-savings" />
-          <label for="inp-use-savings">Pay from Savings Stash</label>
+        <div class="checkbox-wrapper" id="savings-deduct-wrapper" style="display:none;">
+            <input type="checkbox" id="inp-use-savings">
+            <label for="inp-use-savings">Pay from Savings Stash</label>
         </div>
 
         <div class="input-group">
-          <label class="label">Amount</label>
-          <input type="number" id="inp-amt" class="input" placeholder="0.00" />
+            <label class="label">Amount</label>
+            <input type="number" id="inp-amt" class="input" placeholder="0.00">
         </div>
         <div class="input-group">
-          <label class="label">Description</label>
-          <input
-            type="text"
-            id="inp-desc"
-            class="input"
-            placeholder="Description"
-          />
+            <label class="label">Description</label>
+            <input type="text" id="inp-desc" class="input" placeholder="Description">
         </div>
         <div class="input-group" id="cat-wrapper">
-          <label class="label">Category</label>
-          <select id="inp-cat" class="input" onchange="updatePlaceholder()">
-            <option value="needs">Needs</option>
-            <option value="wants">Wants</option>
-            <option value="futures">Futures</option>
-          </select>
+            <label class="label">Category</label>
+            <select id="inp-cat" class="input" onchange="updatePlaceholder()">
+                <option value="needs">Needs</option>
+                <option value="wants">Wants</option>
+                <option value="futures">Futures</option>
+            </select>
         </div>
         <button class="btn-main" onclick="saveTransaction()">Confirm</button>
-      </div>
     </div>
+</div>
 
-    <div class="backdrop" id="modal-setup">
-      <div class="modal">
+<div class="backdrop" id="modal-setup">
+    <div class="modal">
         <div class="modal-header">
-          <div class="modal-title" id="setup-title">Setup Budget</div>
-          <div style="cursor: pointer" onclick="closeAllModals()">×</div>
+            <div class="modal-title" id="setup-title">Setup Budget</div>
+            <div style="cursor:pointer" onclick="closeAllModals()">×</div>
         </div>
         <div class="input-group">
-          <label class="label">Net Income</label>
-          <input
-            type="number"
-            id="setup-income"
-            class="input"
-            placeholder="Total Income"
-          />
+            <label class="label">Net Income</label>
+            <input type="number" id="setup-income" class="input" placeholder="Total Income">
         </div>
-        <div
-          style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px"
-        >
-          <div class="input-group">
-            <label class="label" style="color: var(--color-needs)"
-              >Needs %</label
-            >
-            <input type="number" id="setup-needs" class="input" value="65" />
-          </div>
-          <div class="input-group">
-            <label class="label" style="color: var(--color-wants)"
-              >Wants %</label
-            >
-            <input type="number" id="setup-wants" class="input" value="0" />
-          </div>
-          <div class="input-group">
-            <label class="label" style="color: var(--color-futures)"
-              >Futures %</label
-            >
-            <input type="number" id="setup-futures" class="input" value="35" />
-          </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+            <div class="input-group">
+                <label class="label" style="color:var(--color-needs)">Needs %</label>
+                <input type="number" id="setup-needs" class="input" value="65">
+            </div>
+            <div class="input-group">
+                <label class="label" style="color:var(--color-wants)">Wants %</label>
+                <input type="number" id="setup-wants" class="input" value="0">
+            </div>
+            <div class="input-group">
+                <label class="label" style="color:var(--color-futures)">Futures %</label>
+                <input type="number" id="setup-futures" class="input" value="35">
+            </div>
         </div>
-        <button class="btn-main" onclick="saveBudget()">
-          Save Configuration
-        </button>
-        <button
-          id="btn-delete-month"
-          class="btn-ghost"
-          onclick="deleteCurrentMonth()"
-        >
-          Delete This Month
-        </button>
-      </div>
+        <button class="btn-main" onclick="saveBudget()">Save Configuration</button>
+        <button id="btn-delete-month" class="btn-ghost" onclick="deleteCurrentMonth()">Delete This Month</button>
     </div>
+</div>
 
-    <div class="backdrop" id="modal-picker">
-      <div class="modal">
+<div class="backdrop" id="modal-picker">
+    <div class="modal">
         <div class="modal-header">
-          <div class="modal-title">Select Month</div>
-          <div style="cursor: pointer" onclick="closeAllModals()">×</div>
+            <div class="modal-title">Select Month</div>
+            <div style="cursor:pointer" onclick="closeAllModals()">×</div>
         </div>
         <div class="year-selector">
-          <button class="year-btn" onclick="changeYear(-1)">‹</button>
-          <div class="year-display" id="picker-year">2025</div>
-          <button class="year-btn" onclick="changeYear(1)">›</button>
+            <button class="year-btn" onclick="changeYear(-1)">‹</button>
+            <div class="year-display" id="picker-year">2025</div>
+            <button class="year-btn" onclick="changeYear(1)">›</button>
         </div>
         <div class="month-grid" id="picker-months">
-          <div class="month-tile" onclick="selectPickerMonth(1)">Jan</div>
-          <div class="month-tile" onclick="selectPickerMonth(2)">Feb</div>
-          <div class="month-tile" onclick="selectPickerMonth(3)">Mar</div>
-          <div class="month-tile" onclick="selectPickerMonth(4)">Apr</div>
-          <div class="month-tile" onclick="selectPickerMonth(5)">May</div>
-          <div class="month-tile" onclick="selectPickerMonth(6)">Jun</div>
-          <div class="month-tile" onclick="selectPickerMonth(7)">Jul</div>
-          <div class="month-tile" onclick="selectPickerMonth(8)">Aug</div>
-          <div class="month-tile" onclick="selectPickerMonth(9)">Sep</div>
-          <div class="month-tile" onclick="selectPickerMonth(10)">Oct</div>
-          <div class="month-tile" onclick="selectPickerMonth(11)">Nov</div>
-          <div class="month-tile" onclick="selectPickerMonth(12)">Dec</div>
+            <div class="month-tile" onclick="selectPickerMonth(1)">Jan</div>
+            <div class="month-tile" onclick="selectPickerMonth(2)">Feb</div>
+            <div class="month-tile" onclick="selectPickerMonth(3)">Mar</div>
+            <div class="month-tile" onclick="selectPickerMonth(4)">Apr</div>
+            <div class="month-tile" onclick="selectPickerMonth(5)">May</div>
+            <div class="month-tile" onclick="selectPickerMonth(6)">Jun</div>
+            <div class="month-tile" onclick="selectPickerMonth(7)">Jul</div>
+            <div class="month-tile" onclick="selectPickerMonth(8)">Aug</div>
+            <div class="month-tile" onclick="selectPickerMonth(9)">Sep</div>
+            <div class="month-tile" onclick="selectPickerMonth(10)">Oct</div>
+            <div class="month-tile" onclick="selectPickerMonth(11)">Nov</div>
+            <div class="month-tile" onclick="selectPickerMonth(12)">Dec</div>
         </div>
-      </div>
     </div>
+</div>
 
-    <div class="backdrop" id="modal-settings">
-      <div class="modal">
+<div class="backdrop" id="modal-settings">
+    <div class="modal">
         <div class="modal-header">
-          <div class="modal-title">Settings</div>
-          <div style="cursor: pointer" onclick="closeAllModals()">×</div>
+            <div class="modal-title">Settings</div>
+            <div style="cursor:pointer" onclick="closeAllModals()">×</div>
         </div>
-        <button
-          class="btn-main"
-          style="
-            background: #18181b;
-            color: white;
-            border: 1px solid var(--border-subtle);
-            margin-bottom: 10px;
-          "
-          onclick="exportData()"
-        >
-          Download Backup
-        </button>
-        <button
-          class="btn-main"
-          style="
-            background: #18181b;
-            color: white;
-            border: 1px solid var(--border-subtle);
-          "
-          onclick="document.getElementById('imp-file').click()"
-        >
-          Restore Backup
-        </button>
-        <input
-          type="file"
-          id="imp-file"
-          style="display: none"
-          onchange="importData(this)"
-        />
-
-        <button class="btn-danger" onclick="resetAllData()">
-          RESET ALL DATA
-        </button>
-      </div>
+        <button class="btn-main" style="background:#18181b; color:white; border:1px solid var(--border-subtle); margin-bottom:10px;" onclick="exportData()">Download Backup</button>
+        <button class="btn-main" style="background:#18181b; color:white; border:1px solid var(--border-subtle);" onclick="document.getElementById('imp-file').click()">Restore Backup</button>
+        <input type="file" id="imp-file" style="display:none" onchange="importData(this)">
+        
+        <button class="btn-danger" onclick="resetAllData()">RESET ALL DATA</button>
     </div>
+</div>
 
-    <script>
-      let db = { currentPeriod: getCurrentPeriod(), archives: {} };
-      let activePeriod = getCurrentPeriod();
-      let transType = "expense";
-      let pickerYear = new Date().getFullYear();
-      let targetSetupMonth = null;
+<script>
+    let db = { currentPeriod: getCurrentPeriod(), archives: {} };
+    let activePeriod = getCurrentPeriod();
+    let transType = 'expense';
+    let pickerYear = new Date().getFullYear();
+    let targetSetupMonth = null;
 
-      function init() {
-        const stored = localStorage.getItem("vantage_obsidian_v6");
-        if (stored) db = JSON.parse(stored);
+    function init() {
+        const stored = localStorage.getItem('vantage_obsidian_v7');
+        if(stored) db = JSON.parse(stored);
+        
+        targetSetupMonth = activePeriod; 
 
-        targetSetupMonth = activePeriod;
-
-        if (
-          !db.archives[activePeriod] &&
-          Object.keys(db.archives).length === 0
-        ) {
-          openSetup();
+        if(!db.archives[activePeriod] && Object.keys(db.archives).length === 0) {
+            openSetup();
         } else {
-          if (!db.archives[activePeriod]) {
-            const keys = Object.keys(db.archives).sort().reverse();
-            if (keys.length > 0) activePeriod = keys[0];
-          }
-          render();
+            if(!db.archives[activePeriod]) {
+                const keys = Object.keys(db.archives).sort().reverse();
+                if(keys.length > 0) activePeriod = keys[0];
+            }
+            render();
         }
-      }
+    }
 
-      function getCurrentPeriod() {
+    function getCurrentPeriod() {
         return new Date().toISOString().slice(0, 7);
-      }
+    }
 
-      function getGlobalSavings() {
+    function getGlobalSavings() {
         let total = 0;
-        Object.values(db.archives).forEach((data) => {
-          data.transactions.forEach((t) => {
-            if (t.category === "savings") total += t.amount;
-            if (t.fromSavings) total -= t.amount;
-          });
+        Object.values(db.archives).forEach(data => {
+            data.transactions.forEach(t => {
+                if(t.category === 'savings') total += t.amount;
+                if(t.fromSavings) total -= t.amount;
+            });
         });
         return total;
-      }
+    }
 
-      function render() {
+    function render() {
         const data = db.archives[activePeriod];
         const dateObj = new Date(activePeriod + "-01");
-        const label = dateObj.toLocaleDateString("default", {
-          month: "long",
-          year: "numeric",
-        });
+        const label = dateObj.toLocaleDateString('default', { month: 'long', year: 'numeric' });
+        
+        document.getElementById('mobile-month-label').innerText = label;
+        document.getElementById('desk-month-label').innerText = label;
 
-        document.getElementById("mobile-month-label").innerText = label;
-        document.getElementById("desk-month-label").innerText = label;
-
-        if (!data) {
-          document.getElementById("val-balance").innerText = "0";
-          document.getElementById("transaction-list").innerHTML = "";
-          return;
+        if(!data) {
+             document.getElementById('val-balance').innerText = "0";
+             document.getElementById('transaction-list').innerHTML = "";
+             return;
         }
 
         const limits = {
-          needs: (data.total * data.allocations.needs) / 100,
-          wants: (data.total * data.allocations.wants) / 100,
-          futures: (data.total * data.allocations.futures) / 100,
+            needs: (data.total * data.allocations.needs) / 100,
+            wants: (data.total * data.allocations.wants) / 100,
+            futures: (data.total * data.allocations.futures) / 100
         };
 
         const spent = { needs: 0, wants: 0, futures: 0, savings: 0 };
-        data.transactions.forEach((t) => {
-          if (!t.fromSavings) {
-            if (spent[t.category] !== undefined) spent[t.category] += t.amount;
-          }
+        data.transactions.forEach(t => { 
+            if(!t.fromSavings) {
+                if(spent[t.category] !== undefined) spent[t.category] += t.amount; 
+            }
         });
 
-        const totalSpent =
-          spent.needs + spent.wants + spent.futures + spent.savings;
+        const totalSpent = spent.needs + spent.wants + spent.futures + spent.savings;
         const remaining = data.total - totalSpent;
 
-        document.getElementById("val-balance").innerText =
-          remaining.toLocaleString();
-
+        document.getElementById('val-balance').innerText = remaining.toLocaleString();
+        
         const globalSavings = getGlobalSavings();
-        document.getElementById("val-savings").innerText =
-          globalSavings.toLocaleString();
+        document.getElementById('val-savings').innerText = globalSavings.toLocaleString();
 
-        updateMetric("needs", spent.needs, limits.needs);
-        updateMetric("wants", spent.wants, limits.wants);
-        updateMetric("futures", spent.futures, limits.futures);
+        updateMetric('needs', spent.needs, limits.needs);
+        updateMetric('wants', spent.wants, limits.wants);
+        updateMetric('futures', spent.futures, limits.futures);
 
-        const list = document.getElementById("transaction-list");
-        list.innerHTML = "";
-        const empty = document.getElementById("empty-state");
-
-        if (data.transactions.length === 0) empty.style.display = "block";
+        const list = document.getElementById('transaction-list');
+        list.innerHTML = '';
+        const empty = document.getElementById('empty-state');
+        
+        if(data.transactions.length === 0) empty.style.display = 'block';
         else {
-          empty.style.display = "none";
-          data.transactions.forEach((t) => {
-            const li = document.createElement("li");
-            li.className = "trans-item";
-            let icon = "📄",
-              color = "#fff";
-            let isDeduct = t.fromSavings;
+            empty.style.display = 'none';
+            data.transactions.forEach(t => {
+                const li = document.createElement('li');
+                li.className = 'trans-item';
+                let icon = '📄', color = '#fff';
+                let isDeduct = t.fromSavings;
+                
+                if(isDeduct) {
+                    icon = '💸'; color = 'var(--color-deduct)';
+                } else {
+                    if(t.category === 'needs') { icon = '🏠'; color = 'var(--color-needs)'; }
+                    if(t.category === 'wants') { icon = '🍔'; color = 'var(--color-wants)'; }
+                    if(t.category === 'futures') { icon = '📈'; color = 'var(--color-futures)'; }
+                    if(t.category === 'savings') { icon = '💎'; color = 'var(--color-savings)'; }
+                }
 
-            if (isDeduct) {
-              icon = "💸";
-              color = "var(--color-deduct)";
-            } else {
-              if (t.category === "needs") {
-                icon = "🏠";
-                color = "var(--color-needs)";
-              }
-              if (t.category === "wants") {
-                icon = "🍔";
-                color = "var(--color-wants)";
-              }
-              if (t.category === "futures") {
-                icon = "📈";
-                color = "var(--color-futures)";
-              }
-              if (t.category === "savings") {
-                icon = "💎";
-                color = "var(--color-savings)";
-              }
-            }
-
-            li.innerHTML = `
+                li.innerHTML = `
                     <div class="cat-dot" style="color:${color}">${icon}</div>
                     <div class="trans-details">
-                        <div class="trans-name">${t.desc} ${
-              isDeduct
-                ? '<span style="font-size:0.7rem; background:rgba(168, 85, 247, 0.2); color:#a855f7; padding:2px 6px; border-radius:4px; margin-left:5px;">FROM SAVINGS</span>'
-                : ""
-            }</div>
+                        <div class="trans-name">${t.desc} ${isDeduct ? '<span style="font-size:0.7rem; background:rgba(168, 85, 247, 0.2); color:#a855f7; padding:2px 6px; border-radius:4px; margin-left:5px;">FROM SAVINGS</span>' : ''}</div>
                         <div class="trans-date">${t.date}</div>
                     </div>
                     <div class="trans-amount">₹${t.amount.toLocaleString()}</div>
                     <div class="del-btn" onclick="deleteTrans(${t.id})">×</div>
                 `;
-            list.appendChild(li);
-          });
+                list.appendChild(li);
+            });
         }
         buildDropdowns();
-      }
+    }
 
-      function updateMetric(cat, spent, limit) {
+    function updateMetric(cat, spent, limit) {
         const left = limit - spent;
         const pct = limit > 0 ? (spent / limit) * 100 : 0;
-        document.getElementById(`left-${cat}`).innerText =
-          Math.abs(left).toLocaleString();
+        document.getElementById(`left-${cat}`).innerText = Math.abs(left).toLocaleString();
         const bar = document.getElementById(`bar-${cat}`);
-        bar.style.width = Math.min(pct, 100) + "%";
-
-        if (left < 0) {
-          document.getElementById(`left-${cat}`).style.color = "#ef4444";
-          bar.style.backgroundColor = "#ef4444";
-          bar.style.boxShadow = "0 0 10px #ef4444";
+        bar.style.width = Math.min(pct, 100) + '%';
+        
+        if(left < 0) {
+            document.getElementById(`left-${cat}`).style.color = '#ef4444';
+            bar.style.backgroundColor = '#ef4444';
+            bar.style.boxShadow = '0 0 10px #ef4444';
         } else {
-          document.getElementById(`left-${cat}`).style.color = "white";
-          bar.style.backgroundColor = `var(--color-${cat})`;
-          bar.style.boxShadow = `0 0 10px var(--color-${cat})`;
+            document.getElementById(`left-${cat}`).style.color = 'white';
+            bar.style.backgroundColor = `var(--color-${cat})`;
+            bar.style.boxShadow = `0 0 10px var(--color-${cat})`;
         }
-      }
+    }
 
-      function saveTransaction() {
-        const amt = parseFloat(document.getElementById("inp-amt").value);
-        const desc = document.getElementById("inp-desc").value;
-        const cat =
-          transType === "savings"
-            ? "savings"
-            : document.getElementById("inp-cat").value;
-        const useSavings = document.getElementById("inp-use-savings").checked;
+    function saveTransaction() {
+        const amt = parseFloat(document.getElementById('inp-amt').value);
+        const desc = document.getElementById('inp-desc').value;
+        const cat = transType === 'savings' ? 'savings' : document.getElementById('inp-cat').value;
+        const useSavings = document.getElementById('inp-use-savings').checked;
 
-        if (!amt || !desc) return;
+        if(!amt || !desc) return;
 
         const t = {
-          id: Date.now(),
-          amount: amt,
-          desc: desc,
-          category: cat,
-          date: new Date().toLocaleDateString("default", {
-            day: "numeric",
-            month: "short",
-          }),
-          fromSavings: transType === "expense" && useSavings,
+            id: Date.now(),
+            amount: amt,
+            desc: desc,
+            category: cat,
+            date: new Date().toLocaleDateString('default', { day: 'numeric', month: 'short' }),
+            fromSavings: (transType === 'expense' && useSavings)
         };
 
         db.archives[activePeriod].transactions.unshift(t);
         saveDB();
         closeAllModals();
         render();
-      }
+    }
 
-      function saveBudget() {
-        const inc = parseFloat(document.getElementById("setup-income").value);
-        const n = parseFloat(document.getElementById("setup-needs").value);
-        const w = parseFloat(document.getElementById("setup-wants").value);
-        const f = parseFloat(document.getElementById("setup-futures").value);
+    function saveBudget() {
+        const inc = parseFloat(document.getElementById('setup-income').value);
+        const n = parseFloat(document.getElementById('setup-needs').value);
+        const w = parseFloat(document.getElementById('setup-wants').value);
+        const f = parseFloat(document.getElementById('setup-futures').value);
 
-        if (!inc) return alert("Enter income");
-        if (n + w + f !== 100) return alert("Total must be 100%");
+        if(!inc) return alert("Enter income");
+        if((n+w+f) !== 100) return alert("Total must be 100%");
 
         const mKey = targetSetupMonth;
-
-        if (!db.archives[mKey]) {
-          db.archives[mKey] = {
-            total: inc,
-            allocations: { needs: n, wants: w, futures: f },
-            transactions: [],
-          };
+        
+        if(!db.archives[mKey]) {
+            db.archives[mKey] = { total: inc, allocations: {needs:n, wants:w, futures:f}, transactions: [] };
         } else {
-          db.archives[mKey].total = inc;
-          db.archives[mKey].allocations = { needs: n, wants: w, futures: f };
+            db.archives[mKey].total = inc;
+            db.archives[mKey].allocations = {needs:n, wants:w, futures:f};
         }
 
         activePeriod = mKey;
         saveDB();
         closeAllModals();
         render();
-      }
+    }
 
-      function deleteTrans(id) {
-        if (confirm("Delete?")) {
-          db.archives[activePeriod].transactions = db.archives[
-            activePeriod
-          ].transactions.filter((t) => t.id !== id);
-          saveDB();
-          render();
+    function deleteTrans(id) {
+        if(confirm("Delete?")) {
+            db.archives[activePeriod].transactions = db.archives[activePeriod].transactions.filter(t => t.id !== id);
+            saveDB();
+            render();
         }
-      }
+    }
 
-      function deleteCurrentMonth() {
-        if (!confirm("Delete this entire month and all its data?")) return;
+    function deleteCurrentMonth() {
+        if(!confirm("Delete this entire month and all its data?")) return;
         delete db.archives[targetSetupMonth];
+        
+        if(activePeriod === targetSetupMonth) {
+            const keys = Object.keys(db.archives).sort().reverse();
+            activePeriod = keys.length > 0 ? keys[0] : getCurrentPeriod();
+        }
+        
         saveDB();
+        closeAllModals();
         location.reload();
-      }
+    }
 
-      function resetAllData() {
-        if (confirm("DANGER: This will delete ALL data forever. Continue?")) {
-          localStorage.removeItem("vantage_obsidian_v6");
-          location.reload();
+    function resetAllData() {
+        if(confirm("DANGER: This will delete ALL data forever. Continue?")) {
+            localStorage.removeItem('vantage_obsidian_v7');
+            location.reload();
         }
-      }
+    }
 
-      function closeAllModals() {
-        document
-          .querySelectorAll(".backdrop")
-          .forEach((e) => e.classList.remove("active"));
-      }
+    function closeAllModals() {
+        document.querySelectorAll('.backdrop').forEach(e => e.classList.remove('active'));
+    }
 
-      function closeMenus() {
-        document
-          .querySelectorAll(".dropdown")
-          .forEach((e) => e.classList.remove("show"));
-      }
+    function closeMenus() {
+        document.querySelectorAll('.dropdown').forEach(e => e.classList.remove('show'));
+    }
 
-      function openAddModal() {
-        if (!db.archives[activePeriod]) return alert("Setup budget first");
-        closeAllModals();
-        document.getElementById("modal-add").classList.add("active");
-        document.getElementById("inp-amt").value = "";
-        document.getElementById("inp-desc").value = "";
-        document.getElementById("inp-use-savings").checked = false;
-        document.getElementById("inp-amt").focus();
+    function openAddModal() {
+        if(!db.archives[activePeriod]) return alert("Setup budget first");
+        closeAllModals(); 
+        document.getElementById('modal-add').classList.add('active');
+        document.getElementById('inp-amt').value = '';
+        document.getElementById('inp-desc').value = '';
+        document.getElementById('inp-use-savings').checked = false;
+        document.getElementById('inp-amt').focus();
         updatePlaceholder();
-      }
+    }
 
-      function openSetup() {
+    function openSetup() {
         closeAllModals();
-        document.getElementById("modal-setup").classList.add("active");
+        document.getElementById('modal-setup').classList.add('active');
         const d = db.archives[targetSetupMonth];
-        document.getElementById("setup-title").innerText = d
-          ? "Edit Budget"
-          : "New Budget";
+        document.getElementById('setup-title').innerText = d ? "Edit Budget" : "New Budget";
+        
+        document.getElementById('btn-delete-month').style.display = d ? 'block' : 'none';
 
-        // Only show delete button if data exists for this month
-        document.getElementById("btn-delete-month").style.display = d
-          ? "block"
-          : "none";
-
-        if (d) {
-          document.getElementById("setup-income").value = d.total;
-          document.getElementById("setup-needs").value = d.allocations.needs;
-          document.getElementById("setup-wants").value = d.allocations.wants;
-          document.getElementById("setup-futures").value =
-            d.allocations.futures;
+        if(d) {
+            document.getElementById('setup-income').value = d.total;
+            document.getElementById('setup-needs').value = d.allocations.needs;
+            document.getElementById('setup-wants').value = d.allocations.wants;
+            document.getElementById('setup-futures').value = d.allocations.futures;
         }
-      }
+    }
 
-      function editBudget() {
+    function editBudget() {
         targetSetupMonth = activePeriod;
         openSetup();
-      }
+    }
 
-      function setType(t) {
+    function setType(t) {
         transType = t;
-        document
-          .getElementById("type-expense")
-          .classList.toggle("active", t === "expense");
-        document
-          .getElementById("type-savings")
-          .classList.toggle("active", t === "savings");
-        document.getElementById("cat-wrapper").style.display =
-          t === "savings" ? "none" : "block";
-        document.getElementById("savings-deduct-wrapper").style.display =
-          t === "expense" ? "flex" : "none";
+        document.getElementById('type-expense').classList.toggle('active', t === 'expense');
+        document.getElementById('type-savings').classList.toggle('active', t === 'savings');
+        document.getElementById('cat-wrapper').style.display = t === 'savings' ? 'none' : 'block';
+        document.getElementById('savings-deduct-wrapper').style.display = t === 'expense' ? 'flex' : 'none';
         updatePlaceholder();
-      }
+    }
 
-      function updatePlaceholder() {
-        const field = document.getElementById("inp-desc");
-        if (transType === "savings") {
-          field.placeholder = "e.g. Emergency Fund, Cash Stash";
+    function updatePlaceholder() {
+        const field = document.getElementById('inp-desc');
+        if (transType === 'savings') {
+            field.placeholder = "e.g. Emergency Fund, Cash Stash";
         } else {
-          const cat = document.getElementById("inp-cat").value;
-          if (cat === "needs")
-            field.placeholder = "e.g. Rent, Groceries, Bills";
-          else if (cat === "wants")
-            field.placeholder = "e.g. Netflix, Dining, Movies";
-          else if (cat === "futures")
-            field.placeholder = "e.g. SIP, Stocks, Gold";
+            const cat = document.getElementById('inp-cat').value;
+            if(cat === 'needs') field.placeholder = "e.g. Rent, Groceries, Bills";
+            else if(cat === 'wants') field.placeholder = "e.g. Netflix, Dining, Movies";
+            else if(cat === 'futures') field.placeholder = "e.g. SIP, Stocks, Gold";
         }
-      }
+    }
 
-      function toggleMobDropdown(e) {
-        e.stopPropagation();
-        document.getElementById("mobile-dropdown").classList.toggle("show");
-      }
-      function toggleDeskDropdown(e) {
-        e.stopPropagation();
-        document.getElementById("desk-dropdown").classList.toggle("show");
-      }
+    function toggleMobDropdown(e) { e.stopPropagation(); document.getElementById('mobile-dropdown').classList.toggle('show'); }
+    function toggleDeskDropdown(e) { e.stopPropagation(); document.getElementById('desk-dropdown').classList.toggle('show'); }
 
-      function buildDropdowns() {
+    function buildDropdowns() {
         const keys = Object.keys(db.archives).sort().reverse();
-        const html = keys
-          .map((k) => {
-            const label = new Date(k + "-01").toLocaleDateString("default", {
-              month: "long",
-              year: "numeric",
-            });
-            return `<div class="drop-item" onclick="switchPeriod('${k}')"><span>${label}</span> ${
-              k === activePeriod ? "●" : ""
-            }</div>`;
-          })
-          .join("");
-        document.getElementById("mob-period-list").innerHTML = html;
-        document.getElementById("desk-period-list").innerHTML = html;
-      }
+        const html = keys.map(k => {
+            const label = new Date(k + "-01").toLocaleDateString('default', { month: 'long', year: 'numeric' });
+            return `<div class="drop-item" onclick="switchPeriod('${k}')"><span>${label}</span> ${k===activePeriod ? '●' : ''}</div>`;
+        }).join('');
+        document.getElementById('mob-period-list').innerHTML = html;
+        document.getElementById('desk-period-list').innerHTML = html;
+    }
 
-      function switchPeriod(k) {
+    function switchPeriod(k) {
         activePeriod = k;
         render();
         closeMenus();
-      }
+    }
 
-      function openPickerModal() {
+    function openPickerModal() {
         closeMenus();
         pickerYear = new Date().getFullYear();
         updatePickerUI();
-        document.getElementById("modal-picker").classList.add("active");
-      }
+        document.getElementById('modal-picker').classList.add('active');
+    }
 
-      function changeYear(delta) {
+    function changeYear(delta) {
         pickerYear += delta;
         updatePickerUI();
-      }
+    }
 
-      function updatePickerUI() {
-        document.getElementById("picker-year").innerText = pickerYear;
-      }
+    function updatePickerUI() {
+        document.getElementById('picker-year').innerText = pickerYear;
+    }
 
-      function selectPickerMonth(m) {
-        const mStr = String(m).padStart(2, "0");
+    function selectPickerMonth(m) {
+        const mStr = String(m).padStart(2, '0');
         const key = `${pickerYear}-${mStr}`;
         targetSetupMonth = key;
-        document.getElementById("modal-picker").classList.remove("active");
+        document.getElementById('modal-picker').classList.remove('active');
         openSetup();
-      }
+    }
 
-      function openSettings() {
+    function openSettings() {
         closeMenus();
-        document.getElementById("modal-settings").classList.add("active");
-      }
+        document.getElementById('modal-settings').classList.add('active');
+    }
 
-      function saveDB() {
-        localStorage.setItem("vantage_obsidian_v6", JSON.stringify(db));
-      }
-      function exportData() {
-        const s =
-          "data:text/json;charset=utf-8," +
-          encodeURIComponent(JSON.stringify(db));
-        const a = document.createElement("a");
-        a.href = s;
-        a.download = "vantage_backup.json";
-        a.click();
-      }
-      function importData(inp) {
+    function saveDB() { localStorage.setItem('vantage_obsidian_v7', JSON.stringify(db)); }
+    function exportData() {
+        const s = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+        const a = document.createElement('a'); a.href = s; a.download = "vantage_backup.json"; a.click();
+    }
+    function importData(inp) {
         const r = new FileReader();
-        r.onload = (e) => {
-          try {
-            db = JSON.parse(e.target.result);
-            saveDB();
-            location.reload();
-          } catch (err) {
-            alert("Error");
-          }
-        };
+        r.onload = e => { try { db = JSON.parse(e.target.result); saveDB(); location.reload(); } catch(err){ alert("Error"); } };
         r.readAsText(inp.files[0]);
-      }
+    }
 
-      window.onclick = (e) => {
-        if (
-          !e.target.closest(".selector-btn") &&
-          !e.target.closest(".dropdown")
-        ) {
-          closeMenus();
+    window.onclick = e => {
+        if(!e.target.closest('.selector-btn') && !e.target.closest('.dropdown')) {
+            closeMenus();
         }
-      };
+    }
 
-      init();
-    </script>
-  </body>
+    init();
+</script>
+</body>
 </html>
