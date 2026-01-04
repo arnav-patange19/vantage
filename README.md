@@ -71,8 +71,3 @@ Since Vantage is a client-side application, no backend installation is required.
 2.  **Open the application:**
     Simply open the `vantage.html` file in any modern web browser.
 
----
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
