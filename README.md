@@ -62,12 +62,19 @@ Vantage is a high-performance Single Page Application (SPA) built with vanilla *
 
 ## Installation & Usage
 
-Since Vantage is a client-side application, no backend installation is required.
+You can use Vantage directly via the web or run it locally on your machine.
+
+### Method 1: Instant Access (GitHub Pages)
+No installation is required. Click the link below to launch the app directly in your browser.
+
+**[Launch Vantage Live](https://arnav-patange19.github.io/vantage/)**
+
+### Method 2: Local Installation
+If you prefer to run the code locally:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/arnav-patange19/vantage.git
+    git clone [https://github.com/arnav-patange19/vantage.git](https://github.com/arnav-patange19/vantage.git)
     ```
 2.  **Open the application:**
     Simply open the `index.html` file in any modern web browser.
-
