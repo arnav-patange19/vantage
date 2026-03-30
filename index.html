@@ -244,6 +244,23 @@
         .dropdown.show { display: block; }
         .drop-item { padding: 12px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: var(--text-secondary); display: flex; justify-content: space-between;}
         .drop-item:hover { background: rgba(255,255,255,0.05); color: white; }
+
+        .metric-sub { font-size: 0.7rem; font-weight: 500; color: var(--text-tertiary); }
+        .metric-budget { font-size: 0.72rem; color: var(--text-tertiary); text-align: right; margin-top: 2px; }
+
+        .month-tile.has-data { border-color: rgba(99, 102, 241, 0.4); color: var(--text-primary); }
+        .month-tile.has-data::after { content: '●'; display: block; font-size: 0.4rem; color: #6366f1; margin-top: 4px; line-height: 1; }
+
+        .toast {
+            position: fixed; bottom: 110px; left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: #18181b; border: 1px solid #ef4444; color: white;
+            padding: 12px 24px; border-radius: 12px; font-size: 0.9rem; font-weight: 600;
+            opacity: 0; transition: opacity 0.3s, transform 0.3s;
+            z-index: 9999; pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5); white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
@@ -286,21 +303,30 @@
             <div class="metric-box">
                 <div class="metric-head">
                     <span class="metric-label" style="color:var(--color-needs)">NEEDS</span>
-                    <span class="metric-val">₹<span id="left-needs">0</span></span>
+                    <div style="text-align:right">
+                        <span class="metric-val">₹<span id="left-needs">0</span> <span class="metric-sub">left</span></span>
+                        <div class="metric-budget" id="budget-needs"></div>
+                    </div>
                 </div>
                 <div class="rail"><div id="bar-needs" class="bar" style="background:var(--color-needs); width:0%"></div></div>
             </div>
             <div class="metric-box">
                 <div class="metric-head">
                     <span class="metric-label" style="color:var(--color-wants)">WANTS</span>
-                    <span class="metric-val">₹<span id="left-wants">0</span></span>
+                    <div style="text-align:right">
+                        <span class="metric-val">₹<span id="left-wants">0</span> <span class="metric-sub">left</span></span>
+                        <div class="metric-budget" id="budget-wants"></div>
+                    </div>
                 </div>
                 <div class="rail"><div id="bar-wants" class="bar" style="background:var(--color-wants); width:0%"></div></div>
             </div>
             <div class="metric-box">
                 <div class="metric-head">
                     <span class="metric-label" style="color:var(--color-futures)">FUTURES</span>
-                    <span class="metric-val">₹<span id="left-futures">0</span></span>
+                    <div style="text-align:right">
+                        <span class="metric-val">₹<span id="left-futures">0</span> <span class="metric-sub">left</span></span>
+                        <div class="metric-budget" id="budget-futures"></div>
+                    </div>
                 </div>
                 <div class="rail"><div id="bar-futures" class="bar" style="background:var(--color-futures); width:0%"></div></div>
             </div>
@@ -442,12 +468,37 @@
     </div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
     let db = { currentPeriod: getCurrentPeriod(), archives: {} };
     let activePeriod = getCurrentPeriod();
     let transType = 'expense';
     let pickerYear = new Date().getFullYear();
     let targetSetupMonth = null;
+    let toastTimer = null;
+
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function showToast(msg, isError = true) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.style.borderColor = isError ? '#ef4444' : '#10b981';
+        t.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { closeAllModals(); closeMenus(); }
+    });
 
     function init() {
         const stored = localStorage.getItem('vantage_obsidian_v7');
@@ -545,8 +596,8 @@
                 li.innerHTML = `
                     <div class="cat-dot" style="color:${color}">${icon}</div>
                     <div class="trans-details">
-                        <div class="trans-name">${t.desc} ${isDeduct ? '<span style="font-size:0.7rem; background:rgba(168, 85, 247, 0.2); color:#a855f7; padding:2px 6px; border-radius:4px; margin-left:5px;">FROM SAVINGS</span>' : ''}</div>
-                        <div class="trans-date">${t.date}</div>
+                        <div class="trans-name">${escapeHtml(t.desc)} ${isDeduct ? '<span style="font-size:0.7rem; background:rgba(168, 85, 247, 0.2); color:#a855f7; padding:2px 6px; border-radius:4px; margin-left:5px;">FROM SAVINGS</span>' : ''}</div>
+                        <div class="trans-date">${escapeHtml(t.date)}</div>
                     </div>
                     <div class="trans-amount">₹${t.amount.toLocaleString()}</div>
                     <div class="del-btn" onclick="deleteTrans(${t.id})">×</div>
@@ -561,6 +612,7 @@
         const left = limit - spent;
         const pct = limit > 0 ? (spent / limit) * 100 : 0;
         document.getElementById(`left-${cat}`).innerText = Math.abs(left).toLocaleString();
+        document.getElementById(`budget-${cat}`).innerText = `of ₹${limit.toLocaleString()}`;
         const bar = document.getElementById(`bar-${cat}`);
         bar.style.width = Math.min(pct, 100) + '%';
         
@@ -577,11 +629,12 @@
 
     function saveTransaction() {
         const amt = parseFloat(document.getElementById('inp-amt').value);
-        const desc = document.getElementById('inp-desc').value;
+        const desc = document.getElementById('inp-desc').value.trim();
         const cat = transType === 'savings' ? 'savings' : document.getElementById('inp-cat').value;
         const useSavings = document.getElementById('inp-use-savings').checked;
 
-        if(!amt || !desc) return;
+        if(isNaN(amt) || amt <= 0) return showToast("Please enter a valid amount");
+        if(!desc) return showToast("Please enter a description");
 
         const t = {
             id: Date.now(),
@@ -604,8 +657,8 @@
         const w = parseFloat(document.getElementById('setup-wants').value);
         const f = parseFloat(document.getElementById('setup-futures').value);
 
-        if(!inc) return alert("Enter income");
-        if((n+w+f) !== 100) return alert("Total must be 100%");
+        if(isNaN(inc) || inc <= 0) return showToast("Please enter a valid income");
+        if(Math.abs(n + w + f - 100) > 0.01) return showToast("Allocations must total 100%");
 
         const mKey = targetSetupMonth;
         
@@ -660,7 +713,7 @@
     }
 
     function openAddModal() {
-        if(!db.archives[activePeriod]) return alert("Setup budget first");
+        if(!db.archives[activePeriod]) return showToast("Please setup a budget for this month first");
         closeAllModals(); 
         document.getElementById('modal-add').classList.add('active');
         document.getElementById('inp-amt').value = '';
@@ -745,6 +798,10 @@
 
     function updatePickerUI() {
         document.getElementById('picker-year').innerText = pickerYear;
+        document.querySelectorAll('.month-tile').forEach((tile, i) => {
+            const key = `${pickerYear}-${String(i + 1).padStart(2, '0')}`;
+            tile.classList.toggle('has-data', !!db.archives[key]);
+        });
     }
 
     function selectPickerMonth(m) {
@@ -767,7 +824,7 @@
     }
     function importData(inp) {
         const r = new FileReader();
-        r.onload = e => { try { db = JSON.parse(e.target.result); saveDB(); location.reload(); } catch(err){ alert("Error"); } };
+        r.onload = e => { try { db = JSON.parse(e.target.result); saveDB(); location.reload(); } catch(err){ console.error('Import error:', err); showToast("Failed to import: invalid backup file"); } };
         r.readAsText(inp.files[0]);
     }
 
@@ -778,6 +835,9 @@
     }
 
     init();
+
+    document.getElementById('inp-amt').addEventListener('keydown', e => { if(e.key === 'Enter') document.getElementById('inp-desc').focus(); });
+    document.getElementById('inp-desc').addEventListener('keydown', e => { if(e.key === 'Enter') saveTransaction(); });
 </script>
 </body>
 </html>
